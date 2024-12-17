@@ -3,15 +3,14 @@ Alisa
 
 Työtehtävien automatisointi komentokielellä
 
-# Automaattinen työpöydän järjestäjä. Tiedostot menevät niiden tyypin mukaan eri kansioihin esimerkiksi kuvat menevät kuvat kansioon ja dokumentit menevät toiseen kansioon.
+Automaattinen työpöydän järjestäjä. Tiedostot menevät niiden tyypin mukaan eri kansioihin esimerkiksi kuvat menevät kuvat kansioon ja dokumentit menevät toiseen kansioon.
 
-# Määritellään lähdekansio ja kohdekansiot
-$sourceFolder = "C:\Users\admin\Desktop"  # Korvaa tämä oikealla polulla
+ 
+$sourceFolder = "C:\Users\admin\Desktop"  
 $destinationFolders = @{
     "kuvat" = "C:\kuvat"
     "dokumentit" = "C:\dokumentit"
 }
-# Käydään läpi kaikki tiedostot lähdekansiossa
 Get-ChildItem -Path $sourceFolder | ForEach-Object {
     $file = $_
     switch -Wildcard ($file.Extension) {
@@ -27,7 +26,9 @@ Get-ChildItem -Path $sourceFolder | ForEach-Object {
 Write-Output "Tiedostot siirretty onnistuneesti!"
 
 
-# Salasanan vahvuustarkistus
+
+
+Salasanan vahvuustarkistus
 
 function Test-PasswordStrength {
     param (
