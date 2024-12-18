@@ -43,11 +43,11 @@ function Move-Files {
      Write-Output "Tiedosto luotu: $($e.FullPath)"
      Move-Files -Path $e.FullPath
  }
- # Pidetään skripti käynnissä
+ 
  Write-Output "Skripti käynnissä. Paina Ctrl+C keskeyttääksesi."
  while ($true) { Start-Sleep -Seconds 1 }
 
-{
+
 
 Salasanan vahvuustarkistus
 
@@ -101,4 +101,4 @@ $suggestions = Improve-Password -Password $Password
 Write-Output "Vinkkejä salasanan parantamiseen:"
 $suggestions | ForEach-Object { Write-Output "- $_" }
  
- }
+ 
