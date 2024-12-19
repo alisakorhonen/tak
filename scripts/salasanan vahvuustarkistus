@@ -1,1 +1,88 @@
+function Test-PasswordStrength {
+    param (
+        [string]$Password
+    )
+    $lengthCriteria = $Password.Length -ge 8
+    $upperCaseCriteria = $Password -match '[A-Z]'
+    $lowerCaseCriteria = $Password -match '[a-z]'
+    $digitCriteria = $Password -match '\d'
+    $specialCharCriteria = $Password -match '[^A-Za-z0-9]'
+    $strengthScore = ($lengthCriteria + $upperCaseCriteria + $lowerCaseCriteria + $digitCriteria + $specialCharCriteria)
+    switch ($strengthScore) {
+        5 { return "Vahva" }
+        4 { return "Keskivahva" }
+        default { return "Heikko" }
+    }
+}
 
+function Improve-Password {
+    param (
+        [string]$Password
+    )
+    $suggestions = @()
+    $improvedPassword = $Password
+    if ($Password.Length -lt 8) {
+        $suggestions += "Tee salasanasta vähintään 8 merkkiä pitkä."
+        $improvedPassword += "123"
+    }
+    if ($Password -notmatch '[A-Z]') {
+        $suggestions += "Lisää ainakin yksi iso kirjain."
+        $improvedPassword += "A"
+    }
+    if ($Password -notmatch '[a-z]') {
+        $suggestions += "Lisää ainakin yksi pieni kirjain."
+        $improvedPassword += "a"
+    }
+    if ($Password -notmatch '\d') {
+        $suggestions += "Lisää ainakin yksi numero."
+        $improvedPassword += "1"
+    }
+    if ($Password -notmatch '[^A-Za-z0-9]') {
+        $suggestions += "Lisää ainakin yksi erikoismerkki, kuten !, @, #, $."
+        $improvedPassword += "!"
+    }
+    if ($suggestions.Count -eq 0) {
+        $suggestions += "Salasana on vahva."
+    }
+    return [PSCustomObject]@{
+        Suggestions = $suggestions
+        ImprovedPassword = $improvedPassword
+    }
+}
+function IsCommonPassword {
+    param (
+        [string]$Password
+    )
+    $commonPasswords = @("123456", "password", "12345678", "qwerty", "12345", "123456789")
+    return $commonPasswords -contains $Password
+}
+function Generate-StrongPassword {
+    $length = 12
+    $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'
+    -join ((1..$length) | ForEach-Object { $chars[(Get-Random -Maximum $chars.Length)] })
+}
+do {
+    $Password = Read-Host -Prompt "Anna salasana"
+    $strength = Test-PasswordStrength -Password $Password
+    Write-Output "Salasanan vahvuus: $strength"
+    if (IsCommonPassword -Password $Password) {
+        Write-Output "Tämä salasana on hyvin yleinen. Suosittelemme vaihtamaan sen."
+    }
+    if ($strength -ne "Vahva") {
+        $result = Improve-Password -Password $Password
+        $suggestions = $result.Suggestions
+        $improvedPassword = $result.ImprovedPassword
+        Write-Output "Vinkkejä salasanan parantamiseen:"
+        $suggestions | ForEach-Object { Write-Output "- $_" }
+        Write-Output "Esimerkki parannetusta salasanasta: $improvedPassword"
+        $tryAgain = Read-Host -Prompt "Haluatko kokeilla uudelleen? (kyllä/ei)"
+    } else {
+        $tryAgain = "ei"
+    }
+} while ($tryAgain -eq "kyllä")
+Write-Output "Salasanan tarkistus suoritettu."
+
+$strongPassword = Generate-StrongPassword
+Write-Output "Tässä on esimerkki vahvasta salasanasta: $strongPassword"
+
+ 
