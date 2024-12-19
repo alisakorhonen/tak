@@ -1,1 +1,44 @@
-
+$sourceFolders = @("C:\Users\admin\Downloads", "C:\Users\admin\Desktop", "C:\Users\admin\Documents")  # Lisää tähän tarkistettavat kansiot
+$destinationFolders = @{
+    "kuvat" = "C:\kuvat"
+    "dokumentit" = "C:\dokumentit"
+}
+ 
+if (-not (Test-Path -Path $destinationFolders["kuvat"])) {
+    New-Item -ItemType Directory -Path $destinationFolders["kuvat"]
+}
+if (-not (Test-Path -Path $destinationFolders["dokumentit"])) {
+    New-Item -ItemType Directory -Path $destinationFolders["dokumentit"]
+}
+ 
+function Move-Files {
+    param (
+        [string]$Path
+    )
+    try {
+        Write-Output "Siirretään tiedostoa: $Path"
+        $file = Get-Item -Path $Path
+        switch -Wildcard ($file.Extension) {
+            ".png" { Move-Item -Path $file.FullName -Destination $destinationFolders["kuvat"] -Force }
+            ".jpg" { Move-Item -Path $file.FullName -Destination $destinationFolders["kuvat"] -Force }
+            ".jpeg" { Move-Item -Path $file.FullName -Destination $destinationFolders["kuvat"] -Force }
+            ".pdf" { Move-Item -Path $file.FullName -Destination $destinationFolders["dokumentit"] -Force }
+            ".docx" { Move-Item -Path $file.FullName -Destination $destinationFolders["dokumentit"] -Force }
+            ".txt" { Move-Item -Path $file.FullName -Destination $destinationFolders["dokumentit"] -Force }
+            default { Write-Output "Tiedostoa ei siirretty: $($file.Name)" }
+        }
+    } catch {
+        Write-Output "Virhe tiedostoa käsiteltäessä: $Path - $_"
+    }
+}
+ 
+while ($true) {
+    foreach ($sourceFolder in $sourceFolders) {
+        Write-Output "Tarkistetaan uusia tiedostoja kansiosta: $sourceFolder"
+        Get-ChildItem -Path $sourceFolder -File | ForEach-Object {
+            Move-Files -Path $_.FullName
+        }
+    }
+    Write-Output "Tarkistus suoritettu. Odotetaan minuutti."
+    Start-Sleep -Seconds 120
+}
