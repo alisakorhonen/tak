@@ -16,4 +16,4 @@ Salasanan vahvuustarkistus
 Salasanan vahvuuden tarkistus on tärkeä turvallisuustoimenpide, joka auttaa varmistamaan, että käyttämäsi salasana on tarpeeksi vahva suojaamaan tietojasi. Tämä salasanan vahvuustarkistus huomioi: Isot kirjaimet, erikoismerkit, 
 pituuden sekä numerot.
 Tällä ohjelmalla ei ole mitään järjestelmävaatimuksia.
-Skriptin pitäisi toimia muissakin koneissa.
+
